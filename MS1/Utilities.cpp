@@ -25,12 +25,14 @@ namespace sdds
 
     };
 
-    void Utilities::setDelimiter(char newDelimiter){
-
+    void Utilities::setDelimiter(char newDelimiter)
+    {
+        m_delimiter = newDelimiter;
     };
 
-    char Utilities::getDelimiter(){
-
+    char Utilities::getDelimiter()
+    {
+        return m_delimiter[0];
     };
 
 }
