@@ -11,6 +11,9 @@
 
 namespace sdds
 {
+    unsigned Station::m_widthField = 0;
+    unsigned Station::id_generator = 0;
+
     Station::Station(const std::string &record){};
     const std::string &Station::getItemName() const
     {

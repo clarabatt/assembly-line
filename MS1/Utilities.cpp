@@ -12,6 +12,8 @@
 
 namespace sdds
 {
+    std::string Utilities::m_delimiter = "";
+
     void Utilities::setFieldWidth(size_t newWidth)
     {
         m_widthField = newWidth;
@@ -43,6 +45,7 @@ namespace sdds
         {
             m_widthField = content.size();
         }
+        return content;
     };
 
     void Utilities::setDelimiter(char newDelimiter)
