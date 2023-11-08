@@ -8,6 +8,7 @@
 // *****************************************************************************
 
 #include "Utilities.h"
+#include <string>
 
 namespace sdds
 {
@@ -21,8 +22,27 @@ namespace sdds
         return m_widthField;
     };
 
-    std::string Utilities::extractToken(const std::string &str, size_t &next_pos, bool &more){
+    std::string Utilities::extractToken(const std::string &str, size_t &next_pos, bool &more)
+    {
+        if (str.substr(next_pos, 1) == m_delimiter)
+        {
+            throw "Delimiter at next_pos";
+        }
 
+        size_t nextDelimiter = str.find(m_delimiter, next_pos);
+        std::string content = str.substr(next_pos, nextDelimiter - next_pos);
+
+        size_t trimStart = content.find_first_not_of(' ');
+        size_t trimEnd = content.find_last_not_of(' ');
+        content = content.substr(trimStart, trimEnd - trimStart + 1);
+
+        next_pos = nextDelimiter + 1;
+        more = nextDelimiter != std::string::npos;
+
+        if (content.size() > m_widthField)
+        {
+            m_widthField = content.size();
+        }
     };
 
     void Utilities::setDelimiter(char newDelimiter)
