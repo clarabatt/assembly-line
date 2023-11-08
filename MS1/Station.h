@@ -12,6 +12,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include "Utilities.h"
 
 namespace sdds
 {
@@ -28,12 +29,12 @@ namespace sdds
 
     public:
         Station();
-        Station(std::string record);
+        Station(const std::string &);
         const std::string &getItemName() const;
         size_t getNextSerialNumber();
         size_t getQuantity() const;
         void updateQuantity();
         void display(std::ostream &os, bool full) const;
-    }
+    };
 }
 #endif
