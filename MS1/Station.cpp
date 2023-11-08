@@ -11,5 +11,12 @@
 
 namespace sdds
 {
+    Station::Station(){};
+    Station::Station(const std::string &record){};
+    const std::string &Station::getItemName() const {};
+    size_t Station::getNextSerialNumber(){};
+    size_t Station::getQuantity() const {};
+    void Station::updateQuantity(){};
+    void Station::display(std::ostream &os, bool full) const {};
 
 }
