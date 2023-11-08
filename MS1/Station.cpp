@@ -28,6 +28,22 @@ namespace sdds
     {
         m_stock > 0 && --m_stock;
     };
-    void Station::display(std::ostream &os, bool full) const {};
+    void Station::display(std::ostream &os, bool full) const
+    {
+        if (full)
+        {
+            os << std::setw(3) << m_id << " | "
+               << std::setw(m_widthField) << m_name << " | "
+               << std::setw(6) << m_next_serial_num << " | "
+               << std::setw(4) << m_stock << " | "
+               << m_description << std::endl;
+        }
+        else
+        {
+            os << std::setw(3) << m_id << " | "
+               << std::setw(m_widthField) << m_name << " | "
+               << std::setw(6) << m_next_serial_num << " | " << std::endl;
+        }
+    };
 
 }
