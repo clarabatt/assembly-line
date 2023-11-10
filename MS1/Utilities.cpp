@@ -12,7 +12,16 @@
 
 namespace sdds
 {
-    std::string Utilities::m_delimiter = "";
+    char Utilities::m_delimiter = ',';
+
+    std::string trim(const std::string &str)
+    {
+        size_t first = str.find_first_not_of(' ');
+        if (first == std::string::npos)
+            return "";
+        size_t last = str.find_last_not_of(' ');
+        return str.substr(first, (last - first + 1));
+    }
 
     void Utilities::setFieldWidth(size_t newWidth)
     {
@@ -24,27 +33,42 @@ namespace sdds
         return m_widthField;
     };
 
-    std::string Utilities::extractToken(const std::string &str, size_t &next_pos, bool &more)
+    std::string Utilities::extractToken(const std::string &str, size_t &next_token_char, bool &more)
     {
-        if (str.substr(next_pos, 1) == m_delimiter)
+
+        if (str[next_token_char] == m_delimiter)
         {
-            throw "Delimiter at next_pos";
+            more = false;
+            throw std::invalid_argument("Delimiter at next_token_char");
         }
 
-        size_t nextDelimiter = str.find(m_delimiter, next_pos);
-        std::string content = str.substr(next_pos, nextDelimiter - next_pos);
+        size_t nextDelimiter = str.find(m_delimiter, next_token_char);
 
-        size_t trimStart = content.find_first_not_of(' ');
-        size_t trimEnd = content.find_last_not_of(' ');
-        content = content.substr(trimStart, trimEnd - trimStart + 1);
-
-        next_pos = nextDelimiter + 1;
-        more = nextDelimiter != std::string::npos;
-
-        if (content.size() > m_widthField)
+        if (nextDelimiter == next_token_char)
         {
-            m_widthField = content.size();
+            next_token_char++;
+            more = str.find(m_delimiter, next_token_char) != std::string::npos;
+            return "";
         }
+        else if (nextDelimiter == std::string::npos)
+        {
+            more = false;
+            nextDelimiter = str.length();
+        }
+        else
+        {
+            more = true;
+        }
+
+        std::string content = str.substr(next_token_char, nextDelimiter - next_token_char);
+        size_t contentSize = content.size();
+
+        content = trim(content);
+
+        next_token_char = nextDelimiter + 1;
+
+        if (contentSize > m_widthField)
+            m_widthField = contentSize;
         return content;
     };
 
@@ -55,7 +79,7 @@ namespace sdds
 
     char Utilities::getDelimiter()
     {
-        return m_delimiter[0];
+        return m_delimiter;
     };
 
 }
