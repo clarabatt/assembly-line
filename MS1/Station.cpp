@@ -34,7 +34,7 @@ namespace sdds
                     m_name = token;
                 }
                 else if (counter == 2)
-                    m_next_serial_num = std::stoi(token);
+                    m_serial_num = std::stoi(token);
                 else if (counter == 3)
                     m_stock = std::stoi(token);
                 else
@@ -53,7 +53,7 @@ namespace sdds
     };
     size_t Station::getNextSerialNumber()
     {
-        return m_next_serial_num;
+        return m_serial_num++;
     };
     size_t Station::getQuantity() const
     {
@@ -69,7 +69,7 @@ namespace sdds
         {
             os << std::setfill('0') << std::setw(3) << std::right << m_id << " | "
                << std::setfill(' ') << std::setw(m_widthField - 1) << std::left << m_name << " | "
-               << std::setfill('0') << std::setw(6) << std::right << m_next_serial_num << " | "
+               << std::setfill('0') << std::setw(6) << std::right << m_serial_num << " | "
                << std::setfill(' ') << std::setw(4) << std::right << m_stock << " | "
                << m_description << std::endl;
         }
@@ -77,7 +77,7 @@ namespace sdds
         {
             os << std::setfill('0') << std::setw(3) << std::right << m_id << " | ";
             os << std::setfill(' ') << std::setw(m_widthField - 1) << std::left << m_name << " | ";
-            os << std::setfill('0') << std::setw(6) << std::right << m_next_serial_num << " | " << std::endl;
+            os << std::setfill('0') << std::setw(6) << std::right << m_serial_num << " | " << std::endl;
         }
     };
 

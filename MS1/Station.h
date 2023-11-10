@@ -21,7 +21,7 @@ namespace sdds
         int m_id;
         std::string m_name;
         std::string m_description;
-        unsigned m_next_serial_num;
+        unsigned m_serial_num;
         unsigned m_stock;
 
         static unsigned m_widthField;
