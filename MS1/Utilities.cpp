@@ -68,7 +68,7 @@ namespace sdds
         next_token_char = nextDelimiter + 1;
 
         if (contentSize > m_widthField)
-            m_widthField = contentSize;
+            setFieldWidth(contentSize);
         return content;
     };
 
