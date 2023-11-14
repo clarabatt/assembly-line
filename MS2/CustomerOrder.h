@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <iostream>
 #include "Utilities.h"
+#include "Station.h"
 
 namespace sdds
 {
@@ -27,9 +28,27 @@ namespace sdds
 
     class CustomerOrder
     {
+        std::string m_name;
+        std::string m_product;
+        size_t m_cntItem;
+        Item **m_lstItem;
+
+        static size_t m_widthField;
 
     public:
         CustomerOrder();
+        CustomerOrder(const std::string &);
+        CustomerOrder(const CustomerOrder &&) noexcept;
+        CustomerOrder &operator=(const CustomerOrder &&) noexcept;
+        ~CustomerOrder();
+        bool isOrderFilled() const;
+        bool isItemFilled(const std::string &itemName) const;
+        void fillItem(Station &station, std::ostream &os);
+        void display(std::ostream &os) const;
+
+        // Delete copy operations
+        CustomerOrder(const CustomerOrder &) = delete;
+        CustomerOrder &operator=(const CustomerOrder &) = delete;
     };
 }
 #endif
