@@ -14,6 +14,7 @@ namespace sdds
     CustomerOrder::CustomerOrder(){
 
     };
+
     CustomerOrder::CustomerOrder(const std::string &record)
     {
         Utilities util;
@@ -43,6 +44,7 @@ namespace sdds
             }
         }
     };
+
     CustomerOrder::CustomerOrder(CustomerOrder &&other) noexcept
     {
         if (this != &other)
@@ -55,6 +57,7 @@ namespace sdds
             other.m_cntItem = 0;
         }
     };
+
     CustomerOrder &CustomerOrder::operator=(CustomerOrder &&other) noexcept
     {
         if (this != &other)
@@ -69,9 +72,13 @@ namespace sdds
         }
         return *this;
     };
-    CustomerOrder::~CustomerOrder(){
 
+    CustomerOrder::~CustomerOrder()
+    {
+        delete[] m_lstItem;
+        m_lstItem = nullptr;
     };
+
     bool CustomerOrder::isOrderFilled() const {
 
     };
