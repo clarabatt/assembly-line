@@ -38,8 +38,8 @@ namespace sdds
     public:
         CustomerOrder();
         CustomerOrder(const std::string &);
-        CustomerOrder(const CustomerOrder &&) noexcept;
-        CustomerOrder &operator=(const CustomerOrder &&) noexcept;
+        CustomerOrder(CustomerOrder &&) noexcept;
+        CustomerOrder &operator=(CustomerOrder &&) noexcept;
         ~CustomerOrder();
         bool isOrderFilled() const;
         bool isItemFilled(const std::string &itemName) const;

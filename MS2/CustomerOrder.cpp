@@ -43,11 +43,31 @@ namespace sdds
             }
         }
     };
-    CustomerOrder::CustomerOrder(const CustomerOrder &&) noexcept {
+    CustomerOrder::CustomerOrder(CustomerOrder &&other) noexcept
+    {
+        if (this != &other)
+        {
+            m_cntItem = other.m_cntItem;
 
+            m_lstItem = other.m_lstItem;
+
+            other.m_lstItem = nullptr;
+            other.m_cntItem = 0;
+        }
     };
-    CustomerOrder &CustomerOrder::operator=(const CustomerOrder &&) noexcept {
+    CustomerOrder &CustomerOrder::operator=(CustomerOrder &&other) noexcept
+    {
+        if (this != &other)
+        {
+            delete[] m_lstItem;
+            m_cntItem = other.m_cntItem;
 
+            m_lstItem = other.m_lstItem;
+
+            other.m_lstItem = nullptr;
+            other.m_cntItem = 0;
+        }
+        return *this;
     };
     CustomerOrder::~CustomerOrder(){
 
