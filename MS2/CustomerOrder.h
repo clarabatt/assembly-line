@@ -31,7 +31,7 @@ namespace sdds
         std::string m_name;
         std::string m_product;
         size_t m_cntItem;
-        Item **m_lstItem;
+        Item **m_lstItem = {};
 
         static size_t m_widthField;
 
@@ -45,6 +45,7 @@ namespace sdds
         bool isItemFilled(const std::string &itemName) const;
         void fillItem(Station &station, std::ostream &os);
         void display(std::ostream &os) const;
+        void addItem(const std::string &itemName);
 
         // Delete copy operations
         CustomerOrder(const CustomerOrder &) = delete;
