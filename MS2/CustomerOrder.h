@@ -12,6 +12,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <algorithm>
 #include "Utilities.h"
 #include "Station.h"
 

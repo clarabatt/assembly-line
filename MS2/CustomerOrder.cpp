@@ -79,11 +79,23 @@ namespace sdds
         m_lstItem = nullptr;
     };
 
-    bool CustomerOrder::isOrderFilled() const {
+    bool CustomerOrder::isOrderFilled() const
+    {
+        auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [](const Item *item)
+                                  { return item->m_isFilled; });
 
+        if (found == m_lstItem + m_cntItem)
+            return true;
+        return false;
     };
-    bool CustomerOrder::isItemFilled(const std::string &itemName) const {
+    bool CustomerOrder::isItemFilled(const std::string &itemName) const
+    {
+        auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
+                                  { return item->m_itemName == itemName and item->m_isFilled; });
 
+        if (found != m_lstItem + m_cntItem)
+            return true;
+        return false;
     };
     void CustomerOrder::fillItem(Station &station, std::ostream &os){
 
