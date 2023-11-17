@@ -13,8 +13,12 @@ namespace sdds
 {
     size_t CustomerOrder::m_widthField = 0;
 
-    CustomerOrder::CustomerOrder(){
-
+    CustomerOrder::CustomerOrder()
+    {
+        m_name = "";
+        m_product = "";
+        m_cntItem = 0;
+        m_lstItem = nullptr;
     };
 
     CustomerOrder::CustomerOrder(const CustomerOrder &)
@@ -47,7 +51,7 @@ namespace sdds
             }
             catch (...)
             {
-                std::cout << "   ERROR: No token.\n";
+                more = false;
             }
         }
     };
@@ -130,7 +134,7 @@ namespace sdds
         auto width = m_widthField;
         if (m_lstItem != nullptr)
             std::for_each(m_lstItem, m_lstItem + m_cntItem, [width](const Item *item)
-                      { std::cout << "[" << std::setfill('0') << std::setw(6) << item->m_serialNumber << "] ";
+                          { std::cout << "[" << std::setfill('0') << std::setw(6) << item->m_serialNumber << "] ";
                       std::cout << std::setfill(' ')<< std::left << std::setw(width) << item->m_itemName << " - ";
                       std::cout << (item->m_isFilled ? "FILLED" : "TO BE FILLED") << std::endl; });
     };
