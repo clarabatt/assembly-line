@@ -11,9 +11,16 @@
 
 namespace sdds
 {
+    size_t CustomerOrder::m_widthField = 0;
+
     CustomerOrder::CustomerOrder(){
 
     };
+
+    CustomerOrder::CustomerOrder(const CustomerOrder &)
+    {
+        throw "Unable to copy";
+    }
 
     CustomerOrder::CustomerOrder(const std::string &record)
     {

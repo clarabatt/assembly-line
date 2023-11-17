@@ -49,7 +49,7 @@ namespace sdds
         void addItem(const std::string &itemName);
 
         // Delete copy operations
-        CustomerOrder(const CustomerOrder &) = delete;
+        CustomerOrder(const CustomerOrder &);
         CustomerOrder &operator=(const CustomerOrder &) = delete;
     };
 }
