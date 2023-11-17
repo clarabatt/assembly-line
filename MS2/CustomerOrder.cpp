@@ -28,6 +28,7 @@ namespace sdds
 
     CustomerOrder::CustomerOrder(const std::string &record)
     {
+        m_cntItem = 0;
         Utilities util;
         bool more = true; // if there are more tokens in the input string
         size_t pos = 0u;  // position of the next token in the input string
@@ -45,9 +46,13 @@ namespace sdds
                     m_name = token;
                 }
                 else if (counter == 2)
+                {
                     m_product = token;
+                }
                 else
+                {
                     addItem(token);
+                }
             }
             catch (...)
             {
