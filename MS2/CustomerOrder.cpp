@@ -104,11 +104,34 @@ namespace sdds
             return true;
         return false;
     };
-    void CustomerOrder::fillItem(Station &station, std::ostream &os){
+    void CustomerOrder::fillItem(Station &station, std::ostream &os)
+    {
+        auto it = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&station](const Item *item)
+                               { return item->m_itemName == station.getItemName(); });
 
+        if (it != m_lstItem + m_cntItem)
+        {
+            if (station.getQuantity() > 0)
+            {
+                (*it)->m_serialNumber = station.getNextSerialNumber();
+                (*it)->m_isFilled = true;
+                station.updateQuantity();
+                os << "Filled " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
+            }
+            else
+            {
+                os << "Unable to fill " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
+            }
+        }
     };
-    void CustomerOrder::display(std::ostream &os) const {
-
+    void CustomerOrder::display(std::ostream &os) const
+    {
+        std::cout << m_name << " - " << m_product << std::endl;
+        auto width = m_widthField;
+        std::for_each(m_lstItem, m_lstItem + m_cntItem, [width](const Item *item)
+                      { std::cout << "[" << std::setfill('0') << std::setw(6) << item->m_serialNumber << "] ";
+                      std::cout << std::setfill(' ')<< std::left << std::setw(width) << item->m_itemName << " - ";
+                      std::cout << (item->m_isFilled ? "FILLED" : "TO BE FILLED") << std::endl; });
     };
 
     void CustomerOrder::addItem(const std::string &itemName)
