@@ -61,26 +61,29 @@ namespace sdds
         }
     };
 
-    CustomerOrder::CustomerOrder(CustomerOrder &&other) noexcept
+    CustomerOrder::CustomerOrder(CustomerOrder &&other) noexcept : m_name(std::move(other.m_name)),
+                                                                   m_product(std::move(other.m_product)),
+                                                                   m_cntItem(other.m_cntItem),
+                                                                   m_lstItem(other.m_lstItem)
     {
-        if (this != &other)
-        {
-            m_cntItem = other.m_cntItem;
 
-            m_lstItem = other.m_lstItem;
-
-            other.m_lstItem = nullptr;
-            other.m_cntItem = 0;
-        }
+        other.m_lstItem = nullptr;
+        other.m_cntItem = 0;
     };
 
     CustomerOrder &CustomerOrder::operator=(CustomerOrder &&other) noexcept
     {
         if (this != &other)
         {
+            for (size_t i = 0; i < m_cntItem; ++i)
+            {
+                delete m_lstItem[i];
+            }
             delete[] m_lstItem;
-            m_cntItem = other.m_cntItem;
 
+            m_name = std::move(other.m_name);
+            m_product = std::move(other.m_product);
+            m_cntItem = other.m_cntItem;
             m_lstItem = other.m_lstItem;
 
             other.m_lstItem = nullptr;
@@ -91,6 +94,10 @@ namespace sdds
 
     CustomerOrder::~CustomerOrder()
     {
+        for (size_t i = 0; i < m_cntItem; ++i)
+        {
+            delete m_lstItem[i];
+        }
         delete[] m_lstItem;
         m_lstItem = nullptr;
     };
