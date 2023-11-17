@@ -112,7 +112,7 @@ namespace sdds
         auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
                                   { return item->m_itemName == itemName && item->m_isFilled; });
 
-        return found != m_lstItem + m_cntItem;
+        return found != m_lstItem;
     };
     void CustomerOrder::fillItem(Station &station, std::ostream &os)
     {
