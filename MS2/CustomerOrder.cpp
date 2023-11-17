@@ -128,7 +128,8 @@ namespace sdds
     {
         std::cout << m_name << " - " << m_product << std::endl;
         auto width = m_widthField;
-        std::for_each(m_lstItem, m_lstItem + m_cntItem, [width](const Item *item)
+        if (m_lstItem != nullptr)
+            std::for_each(m_lstItem, m_lstItem + m_cntItem, [width](const Item *item)
                       { std::cout << "[" << std::setfill('0') << std::setw(6) << item->m_serialNumber << "] ";
                       std::cout << std::setfill(' ')<< std::left << std::setw(width) << item->m_itemName << " - ";
                       std::cout << (item->m_isFilled ? "FILLED" : "TO BE FILLED") << std::endl; });
