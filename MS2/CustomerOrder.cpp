@@ -30,8 +30,8 @@ namespace sdds
     {
         m_cntItem = 0;
         Utilities util;
-        bool more = true; // if there are more tokens in the input string
-        size_t pos = 0u;  // position of the next token in the input string
+        bool more = true;
+        size_t pos = 0u;
         int counter = 0;
         while (more)
         {
@@ -104,21 +104,15 @@ namespace sdds
 
     bool CustomerOrder::isOrderFilled() const
     {
-        auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [](const Item *item)
-                                  { return item->m_isFilled; });
-
-        if (found == m_lstItem + m_cntItem)
-            return true;
-        return false;
+        return std::all_of(m_lstItem, m_lstItem + m_cntItem, [](const Item *item)
+                           { return item->m_isFilled; });
     };
     bool CustomerOrder::isItemFilled(const std::string &itemName) const
     {
         auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
-                                  { return item->m_itemName == itemName and item->m_isFilled; });
+                                  { return item->m_itemName == itemName && item->m_isFilled; });
 
-        if (found != m_lstItem + m_cntItem)
-            return true;
-        return false;
+        return found != m_lstItem + m_cntItem;
     };
     void CustomerOrder::fillItem(Station &station, std::ostream &os)
     {
@@ -132,7 +126,7 @@ namespace sdds
                 (*it)->m_serialNumber = station.getNextSerialNumber();
                 (*it)->m_isFilled = true;
                 station.updateQuantity();
-                os << "Filled " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
+                os << "    Filled " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
             }
             else
             {
