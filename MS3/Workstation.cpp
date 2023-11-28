@@ -11,5 +11,18 @@
 
 namespace sdds
 {
+    Workstation::Workstation(const std::string &){};
+
+    void Workstation::fill(std::ostream &os){};
+
+    bool Workstation::attemptToMoveOrder(){};
+
+    void Workstation::setNextStation(Workstation *station){};
+
+    Workstation *Workstation::getNextStation() const {};
+
+    void Workstation::display(std::ostream &os) const {};
+
+    Workstation &Workstation::operator+=(CustomerOrder &&newOrder){};
 
 }
