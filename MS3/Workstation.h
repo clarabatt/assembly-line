@@ -11,13 +11,31 @@
 #define SDDS_WORKSTATION_H
 
 #include <iomanip>
+#include <vector>
+#include <queue>
 #include <iostream>
 #include "Utilities.h"
+#include "CustomerOrder.h"
 
 namespace sdds
 {
-    class Workstation
+    std::queue<CustomerOrder> g_pending;
+    std::vector<CustomerOrder> g_completed;
+    std::vector<CustomerOrder> g_incomplete;
+
+    class Workstation : public Station
     {
+        std::vector<CustomerOrder> m_orders = {};
+        Workstation *m_pNextStation = nullptr;
+
+    public:
+        Workstation(const std::string &);
+        void fill(std::ostream &os);
+        bool attemptToMoveOrder();
+        void setNextStation(Workstation *station);
+        Workstation *getNextStation() const;
+        void display(std::ostream &os) const;
+        Workstation &operator+=(CustomerOrder &&newOrder);
     };
 }
 
