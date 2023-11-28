@@ -17,7 +17,10 @@ namespace sdds
 
     bool Workstation::attemptToMoveOrder(){};
 
-    void Workstation::setNextStation(Workstation *station){};
+    void Workstation::setNextStation(Workstation *station)
+    {
+        m_pNextStation = station;
+    };
 
     Workstation *Workstation::getNextStation() const {};
 
