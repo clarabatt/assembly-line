@@ -11,6 +11,8 @@
 #define SDDS_LINE_MANAGER_H
 
 #include <iomanip>
+#include <fstream>
+#include <string>
 #include <vector>
 #include <iostream>
 #include "Utilities.h"

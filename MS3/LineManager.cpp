@@ -11,5 +11,49 @@
 
 namespace sdds
 {
+    LineManager::LineManager(const std::string &filename, const std::vector<Workstation *> &stations)
+    {
+        std::ifstream file(filename);
+        if (!file)
+            throw("Error opening the file: " + filename);
 
+        bool more = true;
+        int stations_index = 0;
+
+        while (file and more)
+        {
+            std::string record;
+            getline(file, record);
+
+            Utilities util;
+            size_t pos = 0u;
+
+            try
+            {
+                std::string token = util.extractToken(record, pos, more);
+                Workstation *station = new Workstation(token);
+
+                m_activeLine.push_back(std::move(station));
+
+                if (stations_index == 0)
+                    m_firstStation = station;
+                else
+                    m_activeLine[stations_index - 1]->setNextStation(station);
+
+                stations_index++;
+            }
+            catch (...)
+            {
+                more = false;
+            }
+        }
+
+        file.close();
+    };
+
+    void LineManager::reorderStations(){};
+
+    bool LineManager::run(std::ostream &os){};
+
+    void LineManager::display(std::ostream &os) const {};
 }
