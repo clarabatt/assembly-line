@@ -68,6 +68,10 @@ namespace sdds
         os << item_name << " --> End of Line\n";
     };
 
-    Workstation &Workstation::operator+=(CustomerOrder &&newOrder){};
+    Workstation &Workstation::operator+=(CustomerOrder &&newOrder)
+    {
+        m_orders.push(std::move(newOrder));
+        return *this;
+    };
 
 }
