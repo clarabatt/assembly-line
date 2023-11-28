@@ -57,7 +57,16 @@ namespace sdds
         return m_pNextStation;
     };
 
-    void Workstation::display(std::ostream &os) const {};
+    void Workstation::display(std::ostream &os) const
+    {
+        std::string item_name = this->getItemName();
+        if (m_pNextStation)
+        {
+            std::string next_item_name = m_pNextStation->getItemName();
+            os << item_name << " --> " << next_item_name << std::endl;
+        }
+        os << item_name << " --> End of Line\n";
+    };
 
     Workstation &Workstation::operator+=(CustomerOrder &&newOrder){};
 
