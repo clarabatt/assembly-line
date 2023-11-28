@@ -25,7 +25,7 @@ namespace sdds
 
     class Workstation : public Station
     {
-        std::vector<CustomerOrder> m_orders = {};
+        std::queue<CustomerOrder> m_orders = {};
         Workstation *m_pNextStation = nullptr;
 
     public:

@@ -13,9 +13,39 @@ namespace sdds
 {
     Workstation::Workstation(const std::string &str) : Station(str){};
 
-    void Workstation::fill(std::ostream &os){};
+    void Workstation::fill(std::ostream &os)
+    {
+        CustomerOrder *order = new CustomerOrder();
+        order->fillItem(*this, os);
+        m_orders.push(std::move(*order));
+        delete order;
+    };
 
-    bool Workstation::attemptToMoveOrder(){};
+    bool Workstation::attemptToMoveOrder()
+    {
+        if (m_orders.empty())
+            return false;
+
+        CustomerOrder order = m_orders.front();
+        std::string item_name = this->getItemName();
+        bool noMoreService = order.isOrderFilled() and order.isItemFilled(item_name);
+        bool moved = false;
+        if (noMoreService)
+        {
+            if (!m_pNextStation)
+            {
+                noMoreService ? g_completed.push_back(std::move(order)) : g_incomplete.push_back(std::move(order));
+            }
+            else
+            {
+                *m_pNextStation += std::move(order);
+            }
+            m_orders.pop();
+            moved = true;
+        }
+
+        return moved;
+    };
 
     void Workstation::setNextStation(Workstation *station)
     {
