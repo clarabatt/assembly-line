@@ -11,7 +11,7 @@
 
 namespace sdds
 {
-    Workstation::Workstation(const std::string &){};
+    Workstation::Workstation(const std::string &str) : Station(str){};
 
     void Workstation::fill(std::ostream &os){};
 
