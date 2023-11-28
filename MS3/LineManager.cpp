@@ -51,7 +51,18 @@ namespace sdds
         file.close();
     };
 
-    void LineManager::reorderStations(){};
+    void LineManager::reorderStations()
+    {
+        std::vector<Workstation *> reordered;
+        Workstation *currentStation = m_firstStation;
+
+        while (currentStation != nullptr)
+        {
+            reordered.push_back(currentStation);
+            currentStation = currentStation->getNextStation();
+        }
+        m_activeLine = std::move(reordered);
+    };
 
     bool LineManager::run(std::ostream &os){};
 
