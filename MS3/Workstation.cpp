@@ -22,7 +22,10 @@ namespace sdds
         m_pNextStation = station;
     };
 
-    Workstation *Workstation::getNextStation() const {};
+    Workstation *Workstation::getNextStation() const
+    {
+        return m_pNextStation;
+    };
 
     void Workstation::display(std::ostream &os) const {};
 
