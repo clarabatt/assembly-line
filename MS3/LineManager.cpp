@@ -66,7 +66,27 @@ namespace sdds
 
     bool LineManager::run(std::ostream &os)
     {
-        return true;
+        static size_t iterationCount = 0;
+        ++iterationCount;
+        os << "Line Manager Iteration: " << iterationCount << std::endl;
+
+        if (!g_pending.empty())
+        {
+            *m_firstStation += std::move(g_pending.front());
+            g_pending.erase(g_pending.begin());
+        }
+
+        for (auto &station : m_activeLine)
+        {
+            station->fill(os);
+            station->attemptToMoveOrder();
+        }
+
+        bool allOrdersProcessed = std::all_of(m_activeLine.begin(), m_activeLine.end(),
+                                              [](const Workstation *ws)
+                                              { return ws->checkIfAllOrdersAreCompleted(); });
+
+        return allOrdersProcessed;
     };
 
     void LineManager::display(std::ostream &os) const

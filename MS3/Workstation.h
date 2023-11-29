@@ -25,7 +25,7 @@ namespace sdds
 
     class Workstation : public Station
     {
-        std::queue<CustomerOrder> m_orders = {};
+        std::vector<CustomerOrder> m_orders = {};
         Workstation *m_pNextStation = nullptr;
 
     public:
@@ -36,6 +36,7 @@ namespace sdds
         Workstation *getNextStation() const;
         void display(std::ostream &os) const;
         Workstation &operator+=(CustomerOrder &&newOrder);
+        bool checkIfAllOrdersAreCompleted() const;
     };
 }
 

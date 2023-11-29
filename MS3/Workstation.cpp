@@ -21,7 +21,7 @@ namespace sdds
     {
         CustomerOrder *order = new CustomerOrder();
         order->fillItem(*this, os);
-        m_orders.push(std::move(*order));
+        m_orders.push_back(std::move(*order));
         delete order;
     };
 
@@ -44,7 +44,7 @@ namespace sdds
             {
                 *m_pNextStation += std::move(order);
             }
-            m_orders.pop();
+            m_orders.erase(m_orders.end());
             moved = true;
         }
 
@@ -74,8 +74,20 @@ namespace sdds
 
     Workstation &Workstation::operator+=(CustomerOrder &&newOrder)
     {
-        m_orders.push(std::move(newOrder));
+        m_orders.push_back(std::move(newOrder));
         return *this;
     };
+
+    bool Workstation::checkIfAllOrdersAreCompleted() const
+    {
+        for (const auto &order : m_orders)
+        {
+            if (!order.isOrderFilled())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
