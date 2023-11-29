@@ -11,6 +11,10 @@
 
 namespace sdds
 {
+    std::vector<CustomerOrder> g_pending;
+    std::vector<CustomerOrder> g_completed;
+    std::vector<CustomerOrder> g_incomplete;
+
     Workstation::Workstation(const std::string &str) : Station(str){};
 
     void Workstation::fill(std::ostream &os)

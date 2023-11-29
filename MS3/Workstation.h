@@ -19,9 +19,9 @@
 
 namespace sdds
 {
-    std::queue<CustomerOrder> g_pending;
-    std::vector<CustomerOrder> g_completed;
-    std::vector<CustomerOrder> g_incomplete;
+    extern std::vector<CustomerOrder> g_pending;
+    extern std::vector<CustomerOrder> g_completed;
+    extern std::vector<CustomerOrder> g_incomplete;
 
     class Workstation : public Station
     {
