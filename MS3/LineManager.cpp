@@ -64,7 +64,14 @@ namespace sdds
         m_activeLine = std::move(reordered);
     };
 
-    bool LineManager::run(std::ostream &os){};
+    bool LineManager::run(std::ostream &os)
+    {
+        return true;
+    };
 
-    void LineManager::display(std::ostream &os) const {};
+    void LineManager::display(std::ostream &os) const
+    {
+        for (auto &st : m_activeLine)
+            st->display(os);
+    };
 }
