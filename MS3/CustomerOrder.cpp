@@ -110,12 +110,23 @@ namespace sdds
     bool CustomerOrder::isItemFilled(const std::string &itemName) const
     {
         auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
-                                  { return item->m_itemName == itemName && item->m_isFilled; });
+                                  { return item->m_itemName == itemName; });
 
-        return found != m_lstItem;
+        // if (found != m_lstItem + m_cntItem)
+        // {
+        //     std::cout << "Item " << itemName << " filled: " << (*found)->m_isFilled << std::endl;
+        // }
+
+        return found != m_lstItem + m_cntItem && (*found)->m_isFilled;
     };
     void CustomerOrder::fillItem(Station &station, std::ostream &os)
     {
+        // Print the items in the order
+        // for (int i = 0; i < m_cntItem; ++i)
+        // {
+        //     std::cout << "Item in order: " << m_lstItem[i]->m_itemName << std::endl;
+        // }
+
         auto it = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&station](const Item *item)
                                { return item->m_itemName == station.getItemName(); });
 
@@ -123,6 +134,7 @@ namespace sdds
         {
             if (station.getQuantity() > 0)
             {
+                // std::cout << "Station has enough quantity: " << station.getQuantity() << std::endl;
                 (*it)->m_serialNumber = station.getNextSerialNumber();
                 (*it)->m_isFilled = true;
                 station.updateQuantity();
@@ -132,6 +144,10 @@ namespace sdds
             {
                 os << "Unable to fill " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
             }
+        }
+        else
+        {
+            // std::cout << "Item not found in order: " << station.getItemName() << std::endl;
         }
     };
     void CustomerOrder::display(std::ostream &os) const
@@ -159,6 +175,13 @@ namespace sdds
         delete[] m_lstItem;
         m_lstItem = newList;
         m_cntItem++;
+    }
+
+    bool CustomerOrder::itemExists(const std::string &itemName) const
+    {
+        bool itemExists = std::any_of(m_lstItem, m_lstItem + m_cntItem, [&itemName](const auto &item)
+                                      { return item->m_itemName == itemName; });
+        return itemExists;
     }
 
 }

@@ -47,6 +47,7 @@ namespace sdds
         void fillItem(Station &station, std::ostream &os);
         void display(std::ostream &os) const;
         void addItem(const std::string &itemName);
+        bool itemExists(const std::string &itemName) const;
 
         // Delete copy operations
         CustomerOrder(const CustomerOrder &);

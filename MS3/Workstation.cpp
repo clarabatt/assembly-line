@@ -20,7 +20,10 @@ namespace sdds
     void Workstation::fill(std::ostream &os)
     {
         if (!m_orders.empty())
-            m_orders.begin()->fillItem(*this, os);
+        {
+            m_orders.front().fillItem(*this, os);
+            // os << "Order filled: " << (m_orders.front().isItemFilled(this->getItemName()) ? "yes" : "no") << std::endl;
+        }
     };
 
     bool Workstation::attemptToMoveOrder()
@@ -29,26 +32,32 @@ namespace sdds
             return false;
 
         std::string item_name = this->getItemName();
-        bool noMoreService = m_orders.front().isOrderFilled() and m_orders.front().isItemFilled(item_name);
-        bool moved = false;
-        if (noMoreService)
+
+        bool serviceTobeDone = m_orders.front().itemExists(item_name) && !m_orders.front().isItemFilled(item_name) && getQuantity() > 0;
+
+        // Something needs service here
+        if (serviceTobeDone)
         {
-            if (!m_pNextStation)
-            {
-                if (m_orders.front().isOrderFilled())
-                    g_completed.push_back(std::move(m_orders.front()));
-                else
-                    g_incomplete.push_back(std::move(m_orders.front()));
-            }
-            else
-            {
-                *m_pNextStation += std::move(m_orders.front());
-            }
-            m_orders.erase(m_orders.begin());
-            moved = true;
+            return false;
         }
 
-        return moved;
+        // No more service
+        if (!m_pNextStation)
+        {
+            std::cout << "No next station. Moving order to completed or incomplete." << std::endl;
+            if (m_orders.front().isOrderFilled())
+                g_completed.push_back(std::move(m_orders.front()));
+            else
+                g_incomplete.push_back(std::move(m_orders.front()));
+            return true;
+        }
+        else
+        {
+            // std::cout << "Moving order to next station: " << m_pNextStation->getItemName() << std::endl;
+            *m_pNextStation += std::move(m_orders.front());
+            m_orders.erase(m_orders.begin());
+            return true;
+        }
     };
 
     void Workstation::setNextStation(Workstation *station)

@@ -144,7 +144,9 @@ namespace sdds
     {
         static size_t iterationCount = 0;
         ++iterationCount;
+        // os << "------------------------" << iterationCount << std::endl;
         os << "Line Manager Iteration: " << iterationCount << std::endl;
+        // os << "------------------------" << iterationCount << std::endl;
 
         if (!g_pending.empty())
         {
@@ -154,13 +156,36 @@ namespace sdds
 
         for (auto &station : m_activeLine)
         {
+            // os << "Filling station: " << station->getItemName() << std::endl;
             station->fill(os);
+        }
+
+        for (auto &station : m_activeLine)
+        {
+            // os << "Moving station: " << station->getItemName() << std::endl;
             station->attemptToMoveOrder();
         }
 
-        bool allOrdersProcessed = std::all_of(m_activeLine.begin(), m_activeLine.end(),
-                                              [](const Workstation *ws)
-                                              { return ws->checkIfAllOrdersAreCompleted(); });
+        bool allStocksAreZero = std::all_of(m_activeLine.begin(), m_activeLine.end(),
+                                            [](const Workstation *ws)
+                                            {
+                                                return ws->getQuantity() == 0;
+                                            });
+
+        bool allOrdersFilled = std::all_of(m_activeLine.begin(), m_activeLine.end(),
+                                           [](const Workstation *ws)
+                                           {
+                                               return ws->checkIfAllOrdersAreCompleted();
+                                           });
+
+        bool noItemsInPendingQueue = g_pending.empty();
+
+        bool allOrdersProcessed = (allStocksAreZero or allOrdersFilled) && noItemsInPendingQueue;
+
+        // os << "All orders processed: " << (allOrdersProcessed ? "yes" : "no");
+
+        // if (iterationCount > 10)
+        //     return true;
 
         return allOrdersProcessed;
     };
