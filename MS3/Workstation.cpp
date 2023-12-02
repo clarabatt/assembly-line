@@ -19,7 +19,7 @@ namespace sdds
 
     void Workstation::fill(std::ostream &os)
     {
-        if(!m_orders.empty())
+        if (!m_orders.empty())
             m_orders.begin()->fillItem(*this, os);
     };
 
@@ -69,7 +69,10 @@ namespace sdds
             std::string next_item_name = m_pNextStation->getItemName();
             os << item_name << " --> " << next_item_name << std::endl;
         }
-        os << item_name << " --> End of Line\n";
+        else
+        {
+            os << item_name << " --> End of Line\n";
+        }
     };
 
     Workstation &Workstation::operator+=(CustomerOrder &&newOrder)
