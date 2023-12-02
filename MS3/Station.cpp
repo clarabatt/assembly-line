@@ -63,6 +63,14 @@ namespace sdds
     {
         m_stock > 0 && --m_stock;
     };
+
+    std::string Station::generateStringBluePrint() const
+    {
+        // Armchair,    654321,  10,  Upholstered Wing Chair
+        std::string bluePrint = m_name + "| " + std::to_string(m_serial_num) + "| " + std::to_string(m_stock) + "| " + m_description;
+        return bluePrint;
+    }
+
     void Station::display(std::ostream &os, bool full) const
     {
         if (full)
