@@ -15,37 +15,63 @@ namespace sdds
     {
         std::ifstream file(filename);
         if (!file)
-            throw("Error opening the file: " + filename);
+            throw std::runtime_error("Error opening the file: " + filename);
 
+        std::vector<std::string> currentStationNames;
+        std::vector<std::string> nextStationNames;
+
+        Utilities util;
         bool more = true;
-        int stations_index = 0;
+        size_t next_pos = 0;
 
-        while (file and more)
+        std::string line;
+
+        while (getline(file, line))
         {
-            std::string record;
-            getline(file, record);
-
-            Utilities util;
-            size_t pos = 0u;
-
             try
             {
-                std::string token = util.extractToken(record, pos, more);
-                Workstation *station = new Workstation(token);
+                std::string currentStationName = util.extractToken(line, next_pos, more);
+                std::string nextStationName = more ? util.extractToken(line, next_pos, more) : "";
 
-                m_activeLine.push_back(std::move(station));
-
-                if (stations_index == 0)
-                    m_firstStation = station;
-                else
-                    m_activeLine[stations_index - 1]->setNextStation(station);
-
-                stations_index++;
+                currentStationNames.push_back(currentStationName);
+                nextStationNames.push_back(nextStationName);
             }
-            catch (...)
+            catch (const std::invalid_argument& e)
             {
-                more = false;
+                std::cerr << "Error in line " << line << " : " << e.what() << '\n';
             }
+            next_pos = 0;
+            more = true;
+        }
+
+        for (size_t i = 0; i < currentStationNames.size(); ++i) {
+            Workstation* currentStation = nullptr;
+            Workstation* nextStation = nullptr;
+
+            // Find the current and next stations from the stations vector
+            for (auto &station : stations) {
+                if (station->getItemName() == currentStationNames[i]) {
+                    currentStation = station;
+                }
+                if (!nextStationNames[i].empty() && station->getItemName() == nextStationNames[i]) {
+                    nextStation = station;
+                }
+            }
+
+            if (currentStation) {
+                currentStation->setNextStation(nextStation);
+                if (m_firstStation == nullptr) {
+                    m_firstStation = currentStation;
+                }
+            }
+        }
+
+        // Assuming g_pending is a global or accessible variable, update m_cntCustomerOrder
+        m_cntCustomerOrder = g_pending.size();
+
+        // Now, populate m_activeLine
+        for (auto &station : stations) {
+            m_activeLine.push_back(station);
         }
 
         file.close();
