@@ -17,9 +17,6 @@ namespace sdds
         if (!file)
             throw std::runtime_error("Error opening the file: " + filename);
 
-        std::vector<std::string> currentStationNames;
-        std::vector<std::string> nextStationNames;
-
         Utilities util;
         bool more = true;
         size_t next_pos = 0;
@@ -30,49 +27,45 @@ namespace sdds
         {
             try
             {
+                next_pos = 0;
+                more = true;
                 std::string currentStationName = util.extractToken(line, next_pos, more);
                 std::string nextStationName = more ? util.extractToken(line, next_pos, more) : "";
 
-                currentStationNames.push_back(currentStationName);
-                nextStationNames.push_back(nextStationName);
+                auto currentIt = std::find_if(stations.begin(), stations.end(),
+                                              [&currentStationName](const Workstation* ws) { return ws->getItemName() == currentStationName; });
+
+                auto nextIt = (!nextStationName.empty()) ? std::find_if(stations.begin(), stations.end(),
+                                                                        [&nextStationName](const Workstation* ws) { return ws->getItemName() == nextStationName; })
+                                                         : stations.end();
+
+                if (currentIt != stations.end()) {
+                    Workstation* currentStation = new Workstation((*currentIt)->generateStringBluePrint());
+                    Workstation *nextStation = nullptr;
+                    if (nextIt != stations.end()) {
+                        nextStation = new Workstation((*nextIt)->generateStringBluePrint());
+                    }
+
+                    if (!nextStationName.empty())
+                        currentStation->setNextStation(nextStation);
+
+                    m_activeLine.push_back(currentStation);
+//                    if (!nextStationName.empty())
+//                        m_activeLine.push_back(nextStation);
+
+
+                    if (m_firstStation == nullptr) {
+                        m_firstStation = currentStation;
+                    }
+                }
             }
             catch (const std::invalid_argument& e)
             {
                 std::cerr << "Error in line " << line << " : " << e.what() << '\n';
             }
-            next_pos = 0;
-            more = true;
         }
 
-        for (size_t i = 0; i < currentStationNames.size(); ++i) {
-            Workstation* currentStation = nullptr;
-            Workstation* nextStation = nullptr;
-
-            // Find the current and next stations from the stations vector
-            for (auto &station : stations) {
-                if (station->getItemName() == currentStationNames[i]) {
-                    currentStation = station;
-                }
-                if (!nextStationNames[i].empty() && station->getItemName() == nextStationNames[i]) {
-                    nextStation = station;
-                }
-            }
-
-            if (currentStation) {
-                currentStation->setNextStation(nextStation);
-                if (m_firstStation == nullptr) {
-                    m_firstStation = currentStation;
-                }
-            }
-        }
-
-        // Assuming g_pending is a global or accessible variable, update m_cntCustomerOrder
         m_cntCustomerOrder = g_pending.size();
-
-        // Now, populate m_activeLine
-        for (auto &station : stations) {
-            m_activeLine.push_back(station);
-        }
 
         file.close();
     };
