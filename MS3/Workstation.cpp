@@ -22,8 +22,9 @@ namespace sdds
         if (!m_orders.empty())
         {
             m_orders.front().fillItem(*this, os);
-            // os << "Order filled: " << (m_orders.front().isItemFilled(this->getItemName()) ? "yes" : "no") << std::endl;
+//             os << "Order filled: " << (m_orders.front().isItemFilled(this->getItemName()) ? "yes" : "no") << std::endl;
         }
+//        os << "No Order in this station " << std::endl;
     };
 
     bool Workstation::attemptToMoveOrder()
@@ -33,7 +34,13 @@ namespace sdds
 
         std::string item_name = this->getItemName();
 
-        bool serviceTobeDone = m_orders.front().itemExists(item_name) && !m_orders.front().isItemFilled(item_name) && getQuantity() > 0;
+        bool serviceTobeDone = false;
+        for (const auto& item : m_orders) {
+            if (item.isItemFilled(item_name) && getQuantity() > 0) {
+                serviceTobeDone = true;
+                break;
+            }
+        }
 
         // Something needs service here
         if (serviceTobeDone)
@@ -44,7 +51,7 @@ namespace sdds
         // No more service
         if (!m_pNextStation)
         {
-            std::cout << "No next station. Moving order to completed or incomplete." << std::endl;
+            // std::cout << "No next station. Moving order to completed or incomplete." << std::endl;
             if (m_orders.front().isOrderFilled())
                 g_completed.push_back(std::move(m_orders.front()));
             else
