@@ -19,10 +19,8 @@ namespace sdds
 
     void Workstation::fill(std::ostream &os)
     {
-        CustomerOrder *order = new CustomerOrder();
-        order->fillItem(*this, os);
-        m_orders.push_back(std::move(*order));
-        delete order;
+        if(!m_orders.empty())
+            m_orders.begin()->fillItem(*this, os);
     };
 
     bool Workstation::attemptToMoveOrder()
@@ -37,7 +35,10 @@ namespace sdds
         {
             if (!m_pNextStation)
             {
-                noMoreService ? g_completed.push_back(std::move(m_orders.front())) : g_incomplete.push_back(std::move(m_orders.front()));
+                if (m_orders.front().isOrderFilled())
+                    g_completed.push_back(std::move(m_orders.front()));
+                else
+                    g_incomplete.push_back(std::move(m_orders.front()));
             }
             else
             {
