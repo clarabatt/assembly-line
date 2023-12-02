@@ -31,6 +31,7 @@ namespace sdds
         void reorderStations();
         bool run(std::ostream &os);
         void display(std::ostream &os) const;
+        Workstation *getFirstStation() const;
     };
 }
 

@@ -11,6 +11,28 @@
 
 namespace sdds
 {
+    Workstation *LineManager::getFirstStation() const
+    {
+        for (auto &station : m_activeLine)
+        {
+            bool isNextStation = false;
+            for (auto &otherStation : m_activeLine)
+            {
+                if (otherStation->getNextStation() != nullptr &&
+                    otherStation->getNextStation()->getItemName() == station->getItemName())
+                {
+                    isNextStation = true;
+                    break;
+                }
+            }
+            if (!isNextStation)
+            {
+                return station;
+            }
+        }
+        return nullptr;
+    }
+
     LineManager::LineManager(const std::string &filename, const std::vector<Workstation *> &stations)
     {
         std::ifstream file(filename);
@@ -56,11 +78,6 @@ namespace sdds
                     m_activeLine.push_back(currentStation);
                     //                    if (!nextStationName.empty())
                     //                        m_activeLine.push_back(nextStation);
-
-                    if (m_firstStation == nullptr)
-                    {
-                        m_firstStation = currentStation;
-                    }
                 }
             }
             catch (const std::invalid_argument &e)
@@ -68,6 +85,8 @@ namespace sdds
                 std::cerr << "Error in line " << line << " : " << e.what() << '\n';
             }
         }
+
+        m_firstStation = getFirstStation();
 
         m_cntCustomerOrder = g_pending.size();
 
