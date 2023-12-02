@@ -40,17 +40,15 @@ namespace sdds
             throw std::runtime_error("Error opening the file: " + filename);
 
         Utilities util;
-        bool more = true;
-        size_t next_pos = 0;
-
         std::string line;
 
         while (getline(file, line))
         {
             try
             {
-                next_pos = 0;
-                more = true;
+                size_t next_pos = 0;
+                bool more = true;
+
                 std::string currentStationName = util.extractToken(line, next_pos, more);
                 std::string nextStationName = more ? util.extractToken(line, next_pos, more) : "";
 
@@ -65,31 +63,26 @@ namespace sdds
 
                 if (currentIt != stations.end())
                 {
-                    Workstation *currentStation = new Workstation((*currentIt)->generateStringBluePrint());
+                    Workstation *currentStation = *currentIt;
                     Workstation *nextStation = nullptr;
+
                     if (nextIt != stations.end())
                     {
-                        nextStation = new Workstation((*nextIt)->generateStringBluePrint());
+                        nextStation = *nextIt;
+                        currentStation->setNextStation(nextStation);
                     }
 
-                    if (!nextStationName.empty())
-                        currentStation->setNextStation(nextStation);
-
                     m_activeLine.push_back(currentStation);
-                    //                    if (!nextStationName.empty())
-                    //                        m_activeLine.push_back(nextStation);
                 }
             }
             catch (const std::invalid_argument &e)
             {
-                std::cerr << "Error in line " << line << " : " << e.what() << '\n';
+                std::cerr << "Error in line: " << line << " : " << e.what() << '\n';
             }
         }
 
         m_firstStation = getFirstStation();
-
         m_cntCustomerOrder = g_pending.size();
-
         file.close();
     };
 
@@ -144,9 +137,7 @@ namespace sdds
     {
         static size_t iterationCount = 0;
         ++iterationCount;
-        // os << "------------------------" << iterationCount << std::endl;
         os << "Line Manager Iteration: " << iterationCount << std::endl;
-        // os << "------------------------" << iterationCount << std::endl;
 
         if (!g_pending.empty())
         {
@@ -156,13 +147,13 @@ namespace sdds
 
         for (auto &station : m_activeLine)
         {
-            // os << "Filling station: " << station->getItemName() << std::endl;
+            //            os << "Filling station: " << station->getItemName() << std::endl;
             station->fill(os);
         }
 
         for (auto &station : m_activeLine)
         {
-            // os << "Moving station: " << station->getItemName() << std::endl;
+            //             os << "Moving station: " << station->getItemName() << std::endl;
             station->attemptToMoveOrder();
         }
 
@@ -184,8 +175,8 @@ namespace sdds
 
         // os << "All orders processed: " << (allOrdersProcessed ? "yes" : "no");
 
-        // if (iterationCount > 10)
-        //     return true;
+         if (iterationCount > 5)
+             return true;
 
         return allOrdersProcessed;
     };
