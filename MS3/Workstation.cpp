@@ -30,21 +30,20 @@ namespace sdds
         if (m_orders.empty())
             return false;
 
-        CustomerOrder order = m_orders.front();
         std::string item_name = this->getItemName();
-        bool noMoreService = order.isOrderFilled() and order.isItemFilled(item_name);
+        bool noMoreService = m_orders.front().isOrderFilled() and m_orders.front().isItemFilled(item_name);
         bool moved = false;
         if (noMoreService)
         {
             if (!m_pNextStation)
             {
-                noMoreService ? g_completed.push_back(std::move(order)) : g_incomplete.push_back(std::move(order));
+                noMoreService ? g_completed.push_back(std::move(m_orders.front())) : g_incomplete.push_back(std::move(m_orders.front()));
             }
             else
             {
-                *m_pNextStation += std::move(order);
+                *m_pNextStation += std::move(m_orders.front());
             }
-            m_orders.erase(m_orders.end());
+            m_orders.erase(m_orders.begin());
             moved = true;
         }
 
