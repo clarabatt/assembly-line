@@ -107,34 +107,22 @@ namespace sdds
         return std::all_of(m_lstItem, m_lstItem + m_cntItem, [](const Item *item)
                            { return item->m_isFilled; });
     };
+
     bool CustomerOrder::isItemFilled(const std::string &itemName) const
     {
-        auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
-                                  { return item->m_itemName == itemName; });
+        return std::all_of(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
+                           { return item->m_itemName != itemName || item->m_isFilled; });
+    }
 
-        // if (found != m_lstItem + m_cntItem)
-        // {
-        //     std::cout << "Item " << itemName << " filled: " << (*found)->m_isFilled << std::endl;
-        // }
-
-        return found != m_lstItem + m_cntItem && (*found)->m_isFilled;
-    };
     void CustomerOrder::fillItem(Station &station, std::ostream &os)
     {
-        // Print the items in the order
-        // for (int i = 0; i < m_cntItem; ++i)
-        // {
-        //     std::cout << "Item in order: " << m_lstItem[i]->m_itemName << std::endl;
-        // }
-
         auto it = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&station](const Item *item)
-                               { return item->m_itemName == station.getItemName(); });
+                               { return item->m_itemName == station.getItemName() and !item->m_isFilled; });
 
         if (it != m_lstItem + m_cntItem)
         {
             if (station.getQuantity() > 0)
             {
-                // std::cout << "Station has enough quantity: " << station.getQuantity() << std::endl;
                 (*it)->m_serialNumber = station.getNextSerialNumber();
                 (*it)->m_isFilled = true;
                 station.updateQuantity();
