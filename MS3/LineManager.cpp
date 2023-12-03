@@ -145,10 +145,10 @@ namespace sdds
             g_pending.erase(g_pending.begin());
         }
 
-        if (iterationCount == 12)
-        {
-            bool a = false;
-        }
+        //        if (iterationCount == 12)
+        //        {
+        //            bool a = false;
+        //        }
 
         for (auto &ws : m_activeLine)
         {

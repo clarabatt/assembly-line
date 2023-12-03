@@ -95,18 +95,16 @@ namespace sdds
     {
         if (!m_orders.empty())
         {
-            if (m_orders.front().isOrderFilled())
-            {
-                g_completed.push_back(std::move(m_orders.front()));
-                m_orders.erase(m_orders.begin());
-            }
-            else if (m_pNextStation == nullptr)
+
+            if (m_pNextStation == nullptr)
             {
 
                 if (m_orders.front().isOrderFilled())
                 {
-
-                    g_completed.push_back(std::move(m_orders.front()));
+                    // std::cout << " --------- Order Completed 1" << std::endl;
+                    // m_orders.front().display(std::cout);
+                    // std::cout << " --------- Order Completed 1" << std::endl;
+                    g_completed.insert(g_completed.begin(), std::move(m_orders.front()));
                     m_orders.erase(m_orders.begin());
                 }
                 else
@@ -115,6 +113,14 @@ namespace sdds
                     g_incomplete.push_back(std::move(m_orders.front()));
                     m_orders.erase(m_orders.begin());
                 }
+            }
+            else if (m_orders.front().isOrderFilled())
+            {
+                // std::cout << " --------- Order Completed 2" << std::endl;
+                // m_orders.front().display(std::cout);
+                // std::cout << " --------- Order Completed 2" << std::endl;
+                g_completed.push_back(std::move(m_orders.front()));
+                m_orders.erase(m_orders.begin());
             }
             else
             {

@@ -44,7 +44,7 @@ namespace sdds
         ~CustomerOrder();
         bool isOrderFilled() const;
         bool isItemFilled(const std::string &itemName) const;
-        bool fillItem(Station &station, std::ostream &os);
+        void fillItem(Station &station, std::ostream &os);
         void display(std::ostream &os) const;
         void addItem(const std::string &itemName);
         bool itemExists(const std::string &itemName) const;
