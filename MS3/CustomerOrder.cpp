@@ -131,7 +131,7 @@ namespace sdds
             else
             {
                 os << "    Unable to fill " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
-                if (m_name == "Rania A." and m_product == "2-Room Home Office and Bedroom")
+                if (m_name == "Rania A." and (*it)->m_itemName == "Desk")
                 {
                     os << "    Unable to fill " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
                 }
