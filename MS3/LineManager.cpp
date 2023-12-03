@@ -136,19 +136,16 @@ namespace sdds
     bool LineManager::run(std::ostream &os)
     {
         static size_t iterationCount = 0;
+        static size_t totalOrders = 0;
         ++iterationCount;
         os << "Line Manager Iteration: " << iterationCount << std::endl;
 
         if (!g_pending.empty())
         {
+            ++totalOrders;
             *m_firstStation += std::move(g_pending.front());
             g_pending.erase(g_pending.begin());
         }
-
-        //        if (iterationCount == 12)
-        //        {
-        //            bool a = false;
-        //        }
 
         for (auto &ws : m_activeLine)
         {
@@ -163,12 +160,12 @@ namespace sdds
         auto continueLoop = !std::any_of(m_activeLine.begin(), m_activeLine.end(), [](Workstation *ws)
                                          { return ws->checkIfAllOrdersAreCompleted(); });
 
-        if (iterationCount == 18)
+        if (continueLoop == false && g_pending.empty() && (g_completed.size() + g_incomplete.size() == totalOrders))
         {
             return true;
         }
 
-        return continueLoop;
+        return false;
     };
 
     void LineManager::display(std::ostream &os) const
