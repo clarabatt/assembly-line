@@ -114,7 +114,7 @@ namespace sdds
                            { return item->m_itemName != itemName || item->m_isFilled; });
     }
 
-    void CustomerOrder::fillItem(Station &station, std::ostream &os)
+    bool CustomerOrder::fillItem(Station &station, std::ostream &os)
     {
         auto it = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&station](const Item *item)
                                { return item->m_itemName == station.getItemName() and !item->m_isFilled; });

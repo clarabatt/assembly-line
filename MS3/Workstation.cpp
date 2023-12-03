@@ -93,31 +93,34 @@ namespace sdds
 
     void Workstation::moveOrderToNextStation()
     {
-        if (m_orders.front().isOrderFilled() and !m_orders.empty())
+        if (!m_orders.empty())
         {
-            g_completed.push_back(std::move(m_orders.front()));
-            // m_orders.erase(m_orders.begin());
-        }
-        if (m_pNextStation == nullptr and !m_orders.empty())
-        {
-
             if (m_orders.front().isOrderFilled())
             {
-
                 g_completed.push_back(std::move(m_orders.front()));
                 m_orders.erase(m_orders.begin());
             }
-            else
+            else if (m_pNextStation == nullptr)
             {
 
-                g_incomplete.push_back(std::move(m_orders.front()));
+                if (m_orders.front().isOrderFilled())
+                {
+
+                    g_completed.push_back(std::move(m_orders.front()));
+                    m_orders.erase(m_orders.begin());
+                }
+                else
+                {
+
+                    g_incomplete.push_back(std::move(m_orders.front()));
+                    m_orders.erase(m_orders.begin());
+                }
+            }
+            else
+            {
+                *m_pNextStation += std::move(m_orders.front());
                 m_orders.erase(m_orders.begin());
             }
-        }
-        else
-        {
-            *m_pNextStation += std::move(m_orders.front());
-            m_orders.erase(m_orders.begin());
         }
     };
 
