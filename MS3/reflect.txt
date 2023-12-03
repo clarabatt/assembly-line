@@ -1,0 +1,86 @@
+// *****************************************************************************
+// Author  : Clara Verena Brito Battesini
+// Student ID(s)#: 143430213
+// Email        : cverena-brito-battes@senecacollege.ca
+// 03/12/2023
+//
+// I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+// *****************************************************************************
+
+## Introduction
+
+For this workshop I had to program a manufactor pipeline system, compost by some classes: 
+    
+    1. Utilities - The first module that we wrote, it's responsibilitie is extract files information, considering a format of tokens divided by a delimiter which can changes.
+
+    2. CustomerOrder - Class to manage an Order which has a list of Items inside it. Also the order stores the client's information. This class is important because it's the way we have to fill and check if the items or the order are filled. We can't manage the order without pass by CustomerOrder.
+
+    3. Station - It's a class to be base for workstation classes, but can work by itself as we did in the MS2. The resposibilitie of this class is to manage that part of the line like the stock and what this work line should produce or process.
+
+    4. Workstation - It's a derived class from Station, it add the capacity of store and handle with orders. Having 4 vectores to place the orders which must follow the order: g_pending -> loop[ [ws]m_orders ] -> g_complete | g_incomplete. This class has a behaviour of a linked list, once it points to the next station in line. 
+
+    5. Line Manager - A class resposible to manage the workstations. Reading the line order from a file and instantiating the necessary workstations for them.
+
+## Additional Methods
+
+    I created some additional methods to help me handle with this challenge. 
+
+    ### Workstation
+
+    void moveOrderToNextStation();
+        As my attemptToMoveOrder was getting a little crazy to handle. Too confuse I created this method to separate the logics, a logic to deal with the order and a function to make the moviment. That helped me to think because the code got more semantic like this example: 
+
+        // there is stock
+        if (getQuantity() == 0)
+        {
+            moveOrderToNextStation();
+            return true;
+        }
+
+    bool checkIfAllOrdersAreCompleted() const;
+    This function check if all orders in m_orders are filled. I used it to handle with the loop management for LineManager::run. This function can be refactored to use std functions, but when I wrote this I was overwhelmed with the code and prefered to keep it simple with the for. By the way, sometimes the for syntax is more cleaner than using the standard library algorithms. For example in this part of the run function:
+    for (auto &ws : m_activeLine)
+    {
+        ws->fill(os);
+    }
+
+    for (auto &ws : m_activeLine)
+    {
+        ws->attemptToMoveOrder();
+    } 
+
+    ### Station
+
+        std::string generateStringBluePrint() const;
+        As the LineManager creates a new instance of known stations as workstations. I needed to create a function that exports a string in format that could be read  by the own Station constructor. It'll be used to create a Workstation.
+
+    ### Customer Order
+        
+        bool itemExists(const std::string &itemName) const;
+        This one just check if some specific item exists in the order. I use it to understand if that order can be processed by that workstation or need to move on. 
+    
+
+## Challenges
+
+1. I had a lot of ghost orders, because I forgot to remove them from the lists after move in moveOrderToNextStation. So after move I just had to erase that item. 
+    g_completed.insert(g_completed.begin(), std::move(m_orders.front()));
+    m_orders.erase(m_orders.begin()); 
+
+2. My isItemFilled function besides passed in the MS1 it was not behaving correct and that cost me a lot of time debugging, until I realize the function was not with the correct approach. The condition inside the find_if was not getting checking if it was filled but just for the name. 
+auto found = std::find_if(m_lstItem, m_lstItem + m_cntItem, [&itemName](const Item *item)
+                                  { return item->m_itemName == itemName && item->m_isFilled; });
+
+3. I could not understand the behaviour of the output for Rania's product in iteration 12. Why is expected from the line to try to process twice when is unable to fill? I understood that is because there are two desks in the same order seeking to be filled, but if it's not possible to fill one because of the stock it must go to the next station and not stay and process another time. 
+
+Line Manager Iteration: 12
+    Unable to fill Rania A., 2-Room Home Office and Bedroom [Desk]
+    Unable to fill Rania A., 2-Room Home Office and Bedroom [Desk]
+    Filled Hong H., 1-Room Office [Office Chair]
+
+4. Administrate the interactions between the run function and the attemptToMoveOrder was a nightmare. Handle the exact behaviour of the line was a the most challenging thing. I had to draw it in paper, think and rethink the code, change the approach, until it's done.
+
+5. I took the wrong approach for the linked list. At first time I tought that all the workstations must be in the vector, as a normal linked list. But I realized that wasn't the case. This is a example about how is my implementation:
+
+[i0] Nighttable --> Desk [in the list as pointed by i0 - points to i1]
+[i1] Dresser --> Armchair [in the list as pointed by i1 - points to i2]
+[i2] Filing Cabinet --> Bookcase [in the list as pointed by i2 - points to null]
