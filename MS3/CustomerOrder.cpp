@@ -130,7 +130,7 @@ namespace sdds
             }
             else
             {
-                os << "Unable to fill " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
+                os << "    Unable to fill " << m_name << ", " << m_product << " [" << (*it)->m_itemName << "]\n";
             }
         }
         else

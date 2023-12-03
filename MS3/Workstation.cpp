@@ -32,12 +32,12 @@ namespace sdds
 
         std::string item_name = this->getItemName();
 
-        std::cout << "--------- attemptToMoveOrder: " << item_name << std::endl;
+        // std::cout << "--------- attemptToMoveOrder: " << item_name << std::endl;
 
         // there is stock
         if (getQuantity() == 0)
         {
-            std::cout << " --------- Sem estoque" << std::endl;
+            // std::cout << " --------- Sem estoque" << std::endl;
             moveOrderToNextStation();
             return true;
         }
@@ -46,14 +46,14 @@ namespace sdds
 
         if (!m_orders.begin()->itemExists(item_name))
         {
-            std::cout << " --------- Item n está no pedido" << std::endl;
+            // std::cout << " --------- Item n está no pedido" << std::endl;
             moveOrderToNextStation();
             return true;
         }
 
         if (m_orders.begin()->isItemFilled(item_name))
         {
-            std::cout << " --------- Item filled" << std::endl;
+            // std::cout << " --------- Item filled" << std::endl;
             moveOrderToNextStation();
             return true;
         }
@@ -103,9 +103,9 @@ namespace sdds
     {
         if (m_pNextStation == nullptr)
         {
-            std::cout << " --------- Mover para global" << std::endl;
-            std::cout << " --------- " << m_orders.empty() << std::endl;
-            m_orders.front().display(std::cout);
+            // std::cout << " --------- Mover para global" << std::endl;
+            // std::cout << " --------- " << m_orders.empty() << std::endl;
+            // m_orders.front().display(std::cout);
 
             if (m_orders.front().isOrderFilled())
                 g_completed.push_back(std::move(m_orders.front()));
