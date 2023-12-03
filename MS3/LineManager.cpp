@@ -145,40 +145,29 @@ namespace sdds
             g_pending.erase(g_pending.begin());
         }
 
-        for (auto &station : m_activeLine)
+        for (auto &ws : m_activeLine)
         {
-            //            os << "Filling station: " << station->getItemName() << std::endl;
-            station->fill(os);
+            ws->fill(os);
         }
 
-        for (auto &station : m_activeLine)
+        bool repeat = true;
+
+        // while (iterationCount < 18)
+        // {
+        for (auto &ws : m_activeLine)
         {
-            //             os << "Moving station: " << station->getItemName() << std::endl;
-            station->attemptToMoveOrder();
+            if (ws->attemptToMoveOrder())
+                repeat = true;
         }
+        // }
 
-        bool allStocksAreZero = std::all_of(m_activeLine.begin(), m_activeLine.end(),
-                                            [](const Workstation *ws)
-                                            {
-                                                return ws->getQuantity() == 0;
-                                            });
+        auto continueLoop = !std::any_of(m_activeLine.begin(), m_activeLine.end(), [](Workstation *ws)
+                                         { return ws->checkIfAllOrdersAreCompleted(); });
 
-        bool allOrdersFilled = std::all_of(m_activeLine.begin(), m_activeLine.end(),
-                                           [](const Workstation *ws)
-                                           {
-                                               return ws->checkIfAllOrdersAreCompleted();
-                                           });
+        if (iterationCount == 18)
+            return true;
 
-        bool noItemsInPendingQueue = g_pending.empty();
-
-        bool allOrdersProcessed = (allStocksAreZero or allOrdersFilled) && noItemsInPendingQueue;
-
-        // os << "All orders processed: " << (allOrdersProcessed ? "yes" : "no");
-
-         if (iterationCount > 5)
-             return true;
-
-        return allOrdersProcessed;
+        return continueLoop;
     };
 
     void LineManager::display(std::ostream &os) const

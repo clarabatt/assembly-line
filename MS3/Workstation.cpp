@@ -22,9 +22,7 @@ namespace sdds
         if (!m_orders.empty())
         {
             m_orders.front().fillItem(*this, os);
-//             os << "Order filled: " << (m_orders.front().isItemFilled(this->getItemName()) ? "yes" : "no") << std::endl;
         }
-//        os << "No Order in this station " << std::endl;
     };
 
     bool Workstation::attemptToMoveOrder()
@@ -34,37 +32,33 @@ namespace sdds
 
         std::string item_name = this->getItemName();
 
-        bool serviceTobeDone = false;
-        for (const auto& item : m_orders) {
-            if (item.isItemFilled(item_name) && getQuantity() > 0) {
-                serviceTobeDone = true;
-                break;
-            }
-        }
+        std::cout << "--------- attemptToMoveOrder: " << item_name << std::endl;
 
-        // Something needs service here
-        if (serviceTobeDone)
+        // there is stock
+        if (getQuantity() == 0)
         {
-            return false;
-        }
-
-        // No more service
-        if (!m_pNextStation)
-        {
-            // std::cout << "No next station. Moving order to completed or incomplete." << std::endl;
-            if (m_orders.front().isOrderFilled())
-                g_completed.push_back(std::move(m_orders.front()));
-            else
-                g_incomplete.push_back(std::move(m_orders.front()));
+            std::cout << " --------- Sem estoque" << std::endl;
+            moveOrderToNextStation();
             return true;
         }
-        else
+
+        // order can be processed
+
+        if (!m_orders.begin()->itemExists(item_name))
         {
-            // std::cout << "Moving order to next station: " << m_pNextStation->getItemName() << std::endl;
-            *m_pNextStation += std::move(m_orders.front());
-            m_orders.erase(m_orders.begin());
+            std::cout << " --------- Item n está no pedido" << std::endl;
+            moveOrderToNextStation();
             return true;
         }
+
+        if (m_orders.begin()->isItemFilled(item_name))
+        {
+            std::cout << " --------- Item filled" << std::endl;
+            moveOrderToNextStation();
+            return true;
+        }
+
+        return false;
     };
 
     void Workstation::setNextStation(Workstation *station)
@@ -97,8 +91,41 @@ namespace sdds
         return *this;
     };
 
+    void Workstation::moveOrderToIncomplete()
+    {
+        g_incomplete.push_back(std::move(m_orders.front()));
+    };
+    void Workstation::moveOrderToComplete()
+    {
+        g_completed.push_back(std::move(m_orders.front()));
+    };
+    void Workstation::moveOrderToNextStation()
+    {
+        if (m_pNextStation == nullptr)
+        {
+            std::cout << " --------- Mover para global" << std::endl;
+            std::cout << " --------- " << m_orders.empty() << std::endl;
+            m_orders.front().display(std::cout);
+
+            if (m_orders.front().isOrderFilled())
+                g_completed.push_back(std::move(m_orders.front()));
+            else
+                g_incomplete.push_back(std::move(m_orders.front()));
+            //            auto it = std::for_each(m_orders.begin(), m_orders.end(), [](CustomerOrder &order)
+            //                                    { order.isOrderFilled() ? g_completed.push_back(std::move(order)) : g_incomplete.push_back(std::move(order)); });
+        }
+        else
+        {
+            *m_pNextStation += std::move(m_orders.front());
+            m_orders.erase(m_orders.begin());
+        }
+    };
+
     bool Workstation::checkIfAllOrdersAreCompleted() const
     {
+        if (m_orders.empty())
+            return true;
+
         for (const auto &order : m_orders)
         {
             if (!order.isOrderFilled())

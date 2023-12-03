@@ -36,6 +36,9 @@ namespace sdds
         Workstation *getNextStation() const;
         void display(std::ostream &os) const;
         Workstation &operator+=(CustomerOrder &&newOrder);
+        void moveOrderToIncomplete();
+        void moveOrderToComplete();
+        void moveOrderToNextStation();
         bool checkIfAllOrdersAreCompleted() const;
     };
 }
