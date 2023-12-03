@@ -145,27 +145,28 @@ namespace sdds
             g_pending.erase(g_pending.begin());
         }
 
+        if (iterationCount == 12)
+        {
+            bool a = false;
+        }
+
         for (auto &ws : m_activeLine)
         {
             ws->fill(os);
         }
 
-        bool repeat = true;
-
-        // while (iterationCount < 18)
-        // {
         for (auto &ws : m_activeLine)
         {
-            if (ws->attemptToMoveOrder())
-                repeat = true;
+            ws->attemptToMoveOrder();
         }
-        // }
 
         auto continueLoop = !std::any_of(m_activeLine.begin(), m_activeLine.end(), [](Workstation *ws)
                                          { return ws->checkIfAllOrdersAreCompleted(); });
 
         if (iterationCount == 18)
+        {
             return true;
+        }
 
         return continueLoop;
     };

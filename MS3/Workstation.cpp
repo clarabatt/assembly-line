@@ -91,28 +91,28 @@ namespace sdds
         return *this;
     };
 
-    void Workstation::moveOrderToIncomplete()
-    {
-        g_incomplete.push_back(std::move(m_orders.front()));
-    };
-    void Workstation::moveOrderToComplete()
-    {
-        g_completed.push_back(std::move(m_orders.front()));
-    };
     void Workstation::moveOrderToNextStation()
     {
-        if (m_pNextStation == nullptr)
+        if (m_orders.front().isOrderFilled() and !m_orders.empty())
         {
-            // std::cout << " --------- Mover para global" << std::endl;
-            // std::cout << " --------- " << m_orders.empty() << std::endl;
-            // m_orders.front().display(std::cout);
+            g_completed.push_back(std::move(m_orders.front()));
+            // m_orders.erase(m_orders.begin());
+        }
+        if (m_pNextStation == nullptr and !m_orders.empty())
+        {
 
             if (m_orders.front().isOrderFilled())
+            {
+
                 g_completed.push_back(std::move(m_orders.front()));
+                m_orders.erase(m_orders.begin());
+            }
             else
+            {
+
                 g_incomplete.push_back(std::move(m_orders.front()));
-            //            auto it = std::for_each(m_orders.begin(), m_orders.end(), [](CustomerOrder &order)
-            //                                    { order.isOrderFilled() ? g_completed.push_back(std::move(order)) : g_incomplete.push_back(std::move(order)); });
+                m_orders.erase(m_orders.begin());
+            }
         }
         else
         {
