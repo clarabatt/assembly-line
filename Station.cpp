@@ -1,12 +1,3 @@
-// *****************************************************************************
-// Author  : Clara Verena Brito Battesini
-// Student ID(s)#: 143430213
-// Email        : cverena-brito-battes@senecacollege.ca
-// 10/11/2023
-//
-// I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
-// *****************************************************************************
-
 #include "Station.h"
 
 namespace sdds
@@ -63,6 +54,14 @@ namespace sdds
     {
         m_stock > 0 && --m_stock;
     };
+
+    std::string Station::generateStringBluePrint() const
+    {
+        // Armchair,    654321,  10,  Upholstered Wing Chair
+        std::string bluePrint = m_name + "| " + std::to_string(m_serial_num) + "| " + std::to_string(m_stock) + "| " + m_description;
+        return bluePrint;
+    }
+
     void Station::display(std::ostream &os, bool full) const
     {
         if (full)
